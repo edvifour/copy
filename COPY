@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo de Copy para Cobrança</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Subtle Blue -->
+    <!-- Application Structure Plan: A multi-section, single-page application designed for topic exploration. The structure is thematic, not linear, to allow users to dive into specific areas of interest (Psychology, Process, Strategy, Resources) as needed. This is more effective than a simple document because it organizes complex information into manageable, interactive chunks. The user flow is guided by a main navigation, leading to sections with interactive cards, a clickable process funnel, and charts. This facilitates learning and quick referencing, which is ideal for someone building an AI knowledge base. -->
+    <!-- Visualization & Content Choices: 
+        - Cialdini's Principles: Report Info -> 6 principles of persuasion. Goal -> Inform/Organize. Method -> Interactive HTML cards. Interaction -> Click to reveal details. Justification -> Breaks down core psychological theories into digestible pieces. Method -> HTML/CSS/JS.
+        - Collection Funnel: Report Info -> Stages of collection. Goal -> Show a process. Method -> Visual funnel diagram. Interaction -> Click on a stage to see its specific objectives, tone, and copy examples. Justification -> Provides a clear, actionable framework for applying techniques at the right time. Method -> HTML/CSS/JS.
+        - Channel Effectiveness: Report Info -> Best channels for contact. Goal -> Compare. Method -> Bar Chart. Interaction -> Hover tooltips for details. Justification -> A bar chart provides an immediate visual comparison of channel performance. Library -> Chart.js.
+        - Core Resources: Report Info -> Request for book references. Goal -> Inform. Method -> Grid of book "covers". Interaction -> Click to see summary and relevance. Justification -> More engaging and visually organized than a simple list. Method -> HTML/CSS/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 700px; margin-left: auto; margin-right: auto; height: 350px; max-height: 450px; }
+        .nav-link { transition: all 0.3s ease; }
+        .nav-link.active { color: #0c4a6e; border-bottom-color: #0c4a6e; }
+        .nav-link:not(.active) { border-bottom-color: transparent; }
+        .funnel-stage { transition: all 0.3s ease; clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%); }
+        .funnel-stage:hover { transform: scale(1.05); }
+        .book-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .book-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
+        .section-fade-in { animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <div id="app" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-sky-900 mb-2">Base de Conhecimento para Copy de Cobrança</h1>
+            <p class="text-lg text-stone-600 max-w-3xl mx-auto">Um guia interativo com princípios de persuasão, estratégias e táticas para criar comunicações que convertem.</p>
+        </header>
+
+        <nav class="flex justify-center border-b border-stone-200 mb-12">
+            <button data-target="section-fundamentos" class="nav-link text-stone-600 hover:text-sky-800 font-medium py-4 px-6 border-b-2 active">Fundamentos</button>
+            <button data-target="section-funil" class="nav-link text-stone-600 hover:text-sky-800 font-medium py-4 px-6 border-b-2">Funil de Cobrança</button>
+            <button data-target="section-estrategias" class="nav-link text-stone-600 hover:text-sky-800 font-medium py-4 px-6 border-b-2">Estratégias</button>
+            <button data-target="section-recursos" class="nav-link text-stone-600 hover:text-sky-800 font-medium py-4 px-6 border-b-2">Recursos</button>
+        </nav>
+
+        <main>
+            <section id="section-fundamentos" class="app-section section-fade-in">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-sky-900 mb-2">Psicologia da Persuasão na Cobrança</h2>
+                    <p class="text-md text-stone-600 max-w-2xl mx-auto">A base de uma cobrança eficaz não está na pressão, mas na compreensão do comportamento humano. Esta seção explora os gatilhos mentais de Robert Cialdini, adaptados para o contexto de negociação de dívidas. Use estes princípios para construir uma abordagem mais empática e eficiente.</p>
+                </div>
+                <div id="principles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"></div>
+                <div id="principle-details" class="mt-8 bg-white p-6 rounded-lg shadow-sm border border-stone-200 min-h-[200px]">
+                    <p class="text-stone-500 text-center py-16">Selecione um princípio acima para ver os detalhes e exemplos.</p>
+                </div>
+            </section>
+
+            <section id="section-funil" class="app-section hidden section-fade-in">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-sky-900 mb-2">O Funil de Cobrança Interativo</h2>
+                    <p class="text-md text-stone-600 max-w-2xl mx-auto">Cada estágio da inadimplência exige uma abordagem diferente. Este funil visualiza a jornada do cliente devedor, desde um simples lembrete até a negociação final. Clique em cada estágio para entender o objetivo, o tom ideal e ver exemplos de copy para aplicar em cada momento.</p>
+                </div>
+                <div class="flex flex-col items-center mb-8">
+                    <div id="funnel-container" class="w-full max-w-xs space-y-1"></div>
+                </div>
+                <div id="funnel-details" class="mt-8 bg-white p-6 rounded-lg shadow-sm border border-stone-200 min-h-[200px]">
+                     <p class="text-stone-500 text-center py-16">Selecione um estágio do funil para ver a estratégia correspondente.</p>
+                </div>
+            </section>
+
+            <section id="section-estrategias" class="app-section hidden section-fade-in">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-sky-900 mb-2">Estratégias de Canal e Conteúdo</h2>
+                    <p class="text-md text-stone-600 max-w-2xl mx-auto">O sucesso da cobrança depende de enviar a mensagem certa, no canal certo. Esta seção apresenta um comparativo da eficácia dos canais de comunicação em diferentes fases da cobrança e uma matriz de conteúdo para ajudar a estruturar suas mensagens de forma clara e objetiva.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200 mb-8">
+                    <h3 class="text-xl font-bold text-sky-800 mb-4 text-center">Eficácia de Canais por Estágio do Funil</h3>
+                    <div class="chart-container">
+                        <canvas id="channelsChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-recursos" class="app-section hidden section-fade-in">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-sky-900 mb-2">Recursos Essenciais e Leituras</h2>
+                     <p class="text-md text-stone-600 max-w-2xl mx-auto">Para aprofundar seu conhecimento em persuasão, negociação e comunicação, esta é uma seleção de livros fundamentais. As ideias contidas aqui são a base para qualquer estratégia de comunicação de alto impacto. Clique em cada livro para um resumo e sua aplicação na cobrança.</p>
+                </div>
+                <div id="books-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-16 pt-8 border-t border-stone-200">
+            <p class="text-sm text-stone-500">&copy; 2025 - Guia Interativo V4 Company. Desenvolvido para capacitar a comunicação estratégica.</p>
+        </footer>
+    </div>
+    
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
+        <div id="modal-content" class="bg-white rounded-lg shadow-2xl p-8 max-w-lg w-full relative">
+            <button id="modal-close" class="absolute top-4 right-4 text-stone-500 hover:text-stone-800">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = {
+                principles: [
+                    { 
+                        id: 'reciprocidade', 
+                        name: 'Reciprocidade', 
+                        icon: '🤝',
+                        description: 'As pessoas tendem a retribuir favores. Oferecer algo de valor primeiro (um desconto, um prazo estendido, uma opção de parcelamento facilitada) pode aumentar significativamente a chance de o cliente "retribuir" com o pagamento.',
+                        example: 'Olá, [Nome]! Para te ajudar a regularizar sua situação, preparamos uma condição especial: pague até [Data] e receba 15% de desconto no valor total. Aproveite essa oportunidade para ficar em dia.'
+                    },
+                    { 
+                        id: 'compromisso', 
+                        name: 'Compromisso e Coerência', 
+                        icon: '📝',
+                        description: 'Uma vez que as pessoas se comprometem com algo, elas são mais propensas a seguir com a ação para se manterem coerentes. Busque pequenos "sims". Pergunte se o cliente concorda que regularizar a situação é o melhor caminho antes de apresentar a solução.',
+                        example: 'Entendemos que imprevistos acontecem. Você concorda que encontrar uma solução para essa pendência seria bom para ambos? Temos uma proposta de parcelamento que pode te ajudar. Posso apresentar?'
+                    },
+                    { 
+                        id: 'prova-social', 
+                        name: 'Prova Social', 
+                        icon: '👥',
+                        description: 'As pessoas olham para o comportamento dos outros para guiar suas próprias ações, especialmente em situações de incerteza. Mostrar que outros clientes em situação similar resolveram suas pendências pode encorajar a ação.',
+                        example: 'Olá, [Nome]. Muitos clientes que passaram por uma situação parecida aproveitaram nossa condição de parcelamento em até 10x para organizar as finanças. Essa também pode ser uma ótima opção para você.'
+                    },
+                    { 
+                        id: 'autoridade', 
+                        name: 'Autoridade', 
+                        icon: '⚖️',
+                        description: 'As pessoas são mais propensas a seguir a orientação de figuras de autoridade. A comunicação deve ser profissional e vir de um lugar de legitimidade (a empresa), mas sem ser ameaçadora. O tom é de especialista em soluções, não de cobrador.',
+                        example: 'Comunicado do nosso setor financeiro: identificamos uma pendência em seu cadastro. Para evitar restrições e manter seu acesso, por favor, regularize sua situação através deste link seguro: [Link].'
+                    },
+                    { 
+                        id: 'afinidade', 
+                        name: 'Afinidade', 
+                        icon: '😊',
+                        description: 'As pessoas preferem dizer "sim" para quem elas gostam e conhecem. Crie uma conexão genuína. Use o nome do cliente, mostre empatia e um desejo real de ajudar. Um tom amigável e compreensivo quebra a resistência.',
+                        example: 'Oi, [Nome], tudo bem? Notei que sua fatura de [Mês] está em aberto. Quero entender se aconteceu algo e como podemos te ajudar a resolver isso da melhor forma. Estamos aqui por você.'
+                    },
+                    { 
+                        id: 'escassez', 
+                        name: 'Escassez', 
+                        icon: '⏳',
+                        description: 'As oportunidades parecem mais valiosas quando sua disponibilidade é limitada. Use a escassez de forma ética, focando em "perder" uma condição especial, e não em ameaças.',
+                        example: 'Olá, [Nome]! Sua condição especial de negociação com isenção de juros expira em 48 horas. Não perca a chance de regularizar sua situação com o melhor benefício possível. Acesse agora: [Link].'
+                    }
+                ],
+                funnel: [
+                    { 
+                        stage: '1. Lembrete Amigável', 
+                        objective: 'Prevenção e cortesia. Lembrar o cliente do vencimento próximo ou recém-vencido de forma leve e prestativa.',
+                        tone: 'Amigável, prestativo, informativo, sem tom de cobrança.',
+                        example: 'Oi, [Nome]! Só passando para lembrar que sua fatura no valor de R$ [Valor] vence amanhã. Para facilitar, você pode pagar via Pix ou boleto aqui: [Link]. Qualquer dúvida, é só chamar!',
+                        color: 'bg-sky-200',
+                        textColor: 'text-sky-800'
+                    },
+                    { 
+                        stage: '2. Primeiro Contato (Pós-vencimento)', 
+                        objective: 'Informar sobre o débito em aberto e facilitar o pagamento imediato.',
+                        tone: 'Direto, claro, solícito e empático. Assume-se que pode ter sido um esquecimento.',
+                        example: 'Olá, [Nome]. Notamos que o pagamento de sua fatura de R$ [Valor] ainda não foi identificado em nosso sistema. Pode ter sido um imprevisto! Para resolver, basta acessar o link: [Link]. Estamos à disposição para ajudar.',
+                        color: 'bg-amber-200',
+                        textColor: 'text-amber-800'
+                    },
+                    { 
+                        stage: '3. Insistência e Urgência', 
+                        objective: 'Criar um senso de urgência moderado, destacando a importância de resolver a pendência para evitar consequências.',
+                        tone: 'Firme, mas ainda educado. Foco na consequência da inação (ex: bloqueio de serviço, juros).',
+                        example: '[Nome], sua pendência de R$ [Valor] continua em aberto. Para evitar a suspensão dos seus serviços na próxima semana, regularize sua situação ainda hoje. Use este link para uma negociação rápida: [Link].',
+                        color: 'bg-orange-300',
+                        textColor: 'text-orange-900'
+                    },
+                    { 
+                        stage: '4. Aviso Final (Pré-jurídico)', 
+                        objective: 'Deixar claro que esta é a última oportunidade de negociação amigável antes de medidas mais sérias.',
+                        tone: 'Formal, sério e direto. Menciona as possíveis consequências de forma clara e objetiva (ex: negativação).',
+                        example: 'NOTIFICAÇÃO EXTRAJUDICIAL: Prezado(a) [Nome], esta é a última tentativa de acordo amigável referente ao débito de R$ [Valor]. O não pagamento em 72 horas poderá acarretar no registro do seu CPF nos órgãos de proteção ao crédito. Negocie agora: [Link].',
+                        color: 'bg-red-300',
+                        textColor: 'text-red-900'
+                    },
+                    { 
+                        stage: '5. Oferta de Acordo', 
+                        objective: 'Recuperar o cliente e o valor, mesmo que parcial. Apresentar uma oferta irrecusável para encerrar o ciclo de cobrança.',
+                        tone: 'Conciliador, flexível, focado na solução final. É um reset na relação.',
+                        example: '[Nome], queremos muito resolver sua situação. Temos uma proposta final e exclusiva para você quitar seu débito de R$ [Valor] por apenas R$ [Valor com Desconto] à vista, ou em parcelas que cabem no seu bolso. É a sua chance de recomeçar. Fale conosco: [Link].',
+                        color: 'bg-emerald-300',
+                        textColor: 'text-emerald-900'
+                    }
+                ],
+                books: [
+                    {
+                        title: "As Armas da Persuasão",
+                        author: "Robert B. Cialdini",
+                        summary: "O livro fundamental sobre os 6 princípios da persuasão. É a base teórica para entender por que certas abordagens funcionam e outras não. Essencial para construir qualquer copy que busque influenciar uma decisão.",
+                        relevance: "Cada princípio (Reciprocidade, Coerência, Prova Social, Afinidade, Autoridade, Escassez) é um pilar para a construção de mensagens de cobrança que não se baseiam em ameaças, mas em psicologia.",
+                        color: "bg-sky-800"
+                    },
+                    {
+                        title: "Negocie como se sua vida dependesse disso",
+                        author: "Chris Voss",
+                        summary: "Escrito por um ex-negociador de reféns do FBI, este livro ensina técnicas de negociação baseadas em empatia tática, espelhamento e rotulação de emoções para criar confiança e chegar a um 'sim'.",
+                        relevance: "Transforma a cobrança de uma transação fria em uma conversa. Técnicas como 'Parece que você está em uma situação difícil' podem desarmar o cliente e abrir portas para uma negociação real.",
+                        color: "bg-stone-700"
+                    },
+                    {
+                        title: "Como Fazer Amigos e Influenciar Pessoas",
+                        author: "Dale Carnegie",
+                        summary: "Um clássico sobre relações humanas. Ensina princípios atemporais sobre como se conectar com as pessoas, ser um bom ouvinte e apresentar suas ideias de forma que sejam bem recebidas.",
+                        relevance: "Ajuda a criar o tom de voz da marca na cobrança: empático, respeitoso e focado em ajudar, não em confrontar. Lembra que por trás de uma dívida, existe uma pessoa.",
+                        color: "bg-amber-600"
+                    }
+                ],
+                 chartData: {
+                    labels: ['1. Lembrete', '2. 1º Contato', '3. Urgência', '4. Aviso Final', '5. Acordo'],
+                    datasets: [
+                        {
+                            label: 'WhatsApp',
+                            data: [95, 90, 75, 50, 85],
+                            backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                            borderColor: 'rgba(34, 197, 94, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'E-mail',
+                            data: [80, 70, 65, 80, 75],
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        },
+                         {
+                            label: 'SMS',
+                            data: [90, 85, 70, 60, 50],
+                            backgroundColor: 'rgba(249, 115, 22, 0.7)',
+                            borderColor: 'rgba(249, 115, 22, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                }
+            };
+            
+            const principlesGrid = document.getElementById('principles-grid');
+            const principleDetails = document.getElementById('principle-details');
+            const funnelContainer = document.getElementById('funnel-container');
+            const funnelDetails = document.getElementById('funnel-details');
+            const booksGrid = document.getElementById('books-grid');
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+            const modalClose = document.getElementById('modal-close');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.app-section');
+
+            function showSection(targetId) {
+                sections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.remove('hidden');
+                        section.classList.add('section-fade-in');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    if (link.dataset.target === targetId) {
+                        link.classList.add('active', 'text-sky-900');
+                    } else {
+                        link.classList.remove('active', 'text-sky-900');
+                    }
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    showSection(link.dataset.target);
+                });
+            });
+
+            function displayPrinciples() {
+                principlesGrid.innerHTML = data.principles.map(p => `
+                    <div data-id="${p.id}" class="bg-white p-6 rounded-lg shadow-sm border border-stone-200 cursor-pointer hover:shadow-lg hover:border-sky-300 transition-all duration-300">
+                        <div class="flex items-center">
+                            <span class="text-3xl mr-4">${p.icon}</span>
+                            <h3 class="text-xl font-bold text-sky-800">${p.name}</h3>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function displayPrincipleDetails(id) {
+                const principle = data.principles.find(p => p.id === id);
+                if (principle) {
+                    principleDetails.innerHTML = `
+                        <h3 class="text-2xl font-bold text-sky-900 mb-3 flex items-center"><span class="text-3xl mr-3">${principle.icon}</span> ${principle.name}</h3>
+                        <p class="text-stone-600 mb-4">${principle.description}</p>
+                        <div class="bg-stone-100 p-4 rounded-md border-l-4 border-sky-400">
+                            <p class="font-semibold text-sm text-stone-700 mb-1">Exemplo de Copy:</p>
+                            <p class="text-stone-600 italic">"${principle.example}"</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            principlesGrid.addEventListener('click', (e) => {
+                const card = e.target.closest('[data-id]');
+                if (card) {
+                    displayPrincipleDetails(card.dataset.id);
+                     document.querySelectorAll('#principles-grid > div').forEach(div => div.classList.remove('ring-2', 'ring-sky-400'));
+                    card.classList.add('ring-2', 'ring-sky-400');
+                }
+            });
+
+            function displayFunnel() {
+                funnelContainer.innerHTML = data.funnel.map(f => `
+                    <div data-stage="${f.stage}" class="funnel-stage cursor-pointer ${f.color} ${f.textColor} w-full text-center py-3 px-2 font-bold rounded-sm shadow-sm">
+                        ${f.stage}
+                    </div>
+                `).join('');
+            }
+            
+            function displayFunnelDetails(stageName) {
+                const stage = data.funnel.find(f => f.stage === stageName);
+                if (stage) {
+                    funnelDetails.innerHTML = `
+                        <h3 class="text-2xl font-bold ${stage.textColor} mb-3">${stage.stage}</h3>
+                        <div class="mb-4">
+                            <strong class="text-stone-700">Objetivo Principal:</strong>
+                            <p class="text-stone-600">${stage.objective}</p>
+                        </div>
+                        <div class="mb-4">
+                             <strong class="text-stone-700">Tom de Voz Ideal:</strong>
+                            <p class="text-stone-600">${stage.tone}</p>
+                        </div>
+                        <div class="bg-stone-100 p-4 rounded-md border-l-4 ${stage.color.replace('bg-', 'border-')}">
+                            <p class="font-semibold text-sm text-stone-700 mb-1">Exemplo de Copy:</p>
+                            <p class="text-stone-600 italic">"${stage.example}"</p>
+                        </div>
+                    `;
+                }
+            }
+
+            funnelContainer.addEventListener('click', e => {
+                const stageEl = e.target.closest('[data-stage]');
+                if (stageEl) {
+                    displayFunnelDetails(stageEl.dataset.stage);
+                     document.querySelectorAll('#funnel-container > div').forEach(div => div.classList.remove('ring-2', 'ring-offset-2', 'ring-gray-800'));
+                    stageEl.classList.add('ring-2', 'ring-offset-2', 'ring-gray-800');
+                }
+            });
+            
+            function displayBooks() {
+                booksGrid.innerHTML = data.books.map(b => `
+                    <div data-title="${b.title}" class="book-card cursor-pointer rounded-lg overflow-hidden shadow-md border border-stone-200">
+                        <div class="${b.color} h-24 flex items-center justify-center">
+                             <h3 class="text-xl font-bold text-white text-center p-2">${b.title}</h3>
+                        </div>
+                        <div class="p-4 bg-white">
+                            <p class="text-sm font-semibold text-stone-700">${b.author}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            function showBookModal(title) {
+                const book = data.books.find(b => b.title === title);
+                if(book) {
+                    modalBody.innerHTML = `
+                        <h2 class="text-2xl font-bold text-sky-900 mb-2">${book.title}</h2>
+                        <p class="text-sm font-medium text-stone-500 mb-4">por ${book.author}</p>
+                        <p class="text-stone-700 mb-3">${book.summary}</p>
+                        <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+                             <h4 class="font-semibold text-amber-900">Aplicação na Cobrança</h4>
+                             <p class="text-amber-800 text-sm">${book.relevance}</p>
+                        </div>
+                    `;
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                }
+            }
+
+            booksGrid.addEventListener('click', e => {
+                const card = e.target.closest('[data-title]');
+                if(card) {
+                    showBookModal(card.dataset.title);
+                }
+            });
+
+            modalClose.addEventListener('click', () => {
+                 modal.classList.add('hidden');
+                 modal.classList.remove('flex');
+            });
+            modal.addEventListener('click', e => {
+                if(e.target === modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            });
+
+            function renderCharts() {
+                const ctx = document.getElementById('channelsChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: data.chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: false,
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y + '% de eficácia estimada';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            },
+                        },
+                        scales: {
+                            x: {
+                                stacked: false,
+                                grid: { display: false },
+                                ticks: {
+                                    font: { size: 10 }
+                                }
+                            },
+                            y: {
+                                stacked: false,
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Eficácia Estimada (%)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+
+            displayPrinciples();
+            displayFunnel();
+            displayBooks();
+            renderCharts();
+            showSection('section-fundamentos');
+        });
+    </script>
+</body>
+</html>
